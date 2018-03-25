@@ -1,0 +1,33 @@
+1. 下载
+cdh版本的zookeeper下载页面
+http://archive.cloudera.com/cdh5/cdh/5/
+使用的版本是zookeeper-3.4.5-cdh5.10.0
+下载地址为：http://archive.cloudera.com/cdh5/cdh/5/zookeeper-3.4.5-cdh5.10.0.tar.gz
+
+2. 配置
+  2.1 解压文件，进入解压目录
+  2.2 在主目录下创建数据目录： mkdir myData
+  2.3 cp conf/zoo_sample.cfg conf/zoo.cfg， 配置zoo.cfg
+	· 设置dataDir为myData的绝对路径
+	· 设置服务器地址
+		server.1=localhost:2887:3887
+		server.2=localhost:2888:3888
+		server.3=localhost:2889:3889
+	· 在myData下创建myid文件，内容设置为1
+  2.4 再拷贝两份zookeeper-3.4.5-cdh5.10.0目录，并修改配置：
+	· 修改dataDir为新路径目录
+	· 修改clientPort，3份分别是2181，2182，2183
+	· 修改myData/myid内容，3份分别为1，2，3
+
+3. 启停服务
+	· 在三个主目录下，分别执行：./bin/zkServer.sh start
+	· 执行jps，可以看到三个QuorumPeerMain进程，表明伪分布式的zk集群搭建起来了
+	· 其他命令
+		./bin/zkServer.sh stop 停止服务
+		./bin/zkServer.sh restart 重启服务
+		./bin/zkServer.sh status 查看状态 => 可以查看谁是leader，谁是follower
+
+4. 登录zk执行操作
+	· 登录 ./bin/zkCli.sh -server localhost:2181
+	· 查看节点：ls /
+	· 创建节点: create /a "a"
